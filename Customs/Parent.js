@@ -17,5 +17,6 @@ const styles = StyleSheet.create({
   childrens: {
     paddingVertical: 50,
     paddingHorizontal: 30,
+    marginTop: 150,
   },
 });

@@ -10,28 +10,26 @@ import React from "react";
 import { Parent } from "../Customs/Parent";
 import Logger from "../Snippets/Logger";
 
-const Signin = ({ navigation }) => {
+const Login = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/signin.png")} style={styles.logo} />
-      <Text style={styles.text_two}>Sign in</Text>
+      <Image source={require("../assets/login.png")} style={styles.logo} />
+      <Text style={styles.text_two}>Login</Text>
       <View style={styles.inputs_container}>
         <TextInput placeholder="User name" style={styles.inputs} />
-        <TextInput placeholder="Phone Number" style={styles.inputs} />
-        <TextInput placeholder="Email" style={styles.inputs} />
         <TextInput placeholder="Password" style={styles.inputs} />
       </View>
       <TouchableOpacity
         onPress={() => navigation.navigate("Signin")}
         style={styles.button}
       >
-        <Text style={styles.button_text}>Sign In</Text>
+        <Text style={styles.button_text}>Login</Text>
       </TouchableOpacity>
       <Text
-        onPress={() => navigation.navigate("Login")}
+        onPress={() => navigation.navigate("Forgot")}
         style={styles.minitext}
       >
-        Already have an account?
+        Forgot username or password?
       </Text>
       <Text style={styles.or}>or</Text>
       <Logger />
@@ -39,7 +37,7 @@ const Signin = ({ navigation }) => {
   );
 };
 
-export default Signin;
+export default Login;
 
 const styles = StyleSheet.create({
   logo: {
@@ -89,5 +87,10 @@ const styles = StyleSheet.create({
   },
   or: {
     marginTop: 12,
+  },
+  icons: {
+    flexDirection: "row",
+    width: 60,
+    justifyContent: "space-between",
   },
 });

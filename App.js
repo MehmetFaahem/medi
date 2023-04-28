@@ -13,6 +13,8 @@ import Welcome from "./Components/Welcome";
 import Signin from "./Components/Signin";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { navigationRef } from "./Customs/rootNavigation";
+import Login from "./Components/Login";
+import Forgot from "./Components/Forgot";
 NavigationBar.setBackgroundColorAsync("rgba(117, 196, 76, 1)");
 
 const Tab = createBottomTabNavigator();
@@ -39,6 +41,8 @@ export default function App() {
         >
           <Stack.Screen name="Welcome" component={Welcome} />
           <Stack.Screen name="Signin" component={Signin} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Forgot" component={Forgot} />
         </Stack.Navigator>
       </NavigationContainer>
     );
