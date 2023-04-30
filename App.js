@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "./Components/Home";
@@ -7,22 +7,42 @@ import Setting from "./Components/Setting";
 import { FontAwesome } from "@expo/vector-icons";
 import "react-native-gesture-handler";
 import * as NavigationBar from "expo-navigation-bar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Initial from "./Components/Initial";
 import Welcome from "./Components/Welcome";
 import Signin from "./Components/Signin";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { navigationRef } from "./Customs/rootNavigation";
 import Login from "./Components/Login";
 import Forgot from "./Components/Forgot";
+import { mediStore } from "./redux/store";
+import { Provider } from "react-redux";
+import { Entypo } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import Header from "./Customs/Header";
+
 NavigationBar.setBackgroundColorAsync("rgba(117, 196, 76, 1)");
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+const AppWrapper = () => {
+  return (
+    <Provider store={mediStore}>
+      <App />
+    </Provider>
+  );
+};
+
+export function App() {
+  const status = useSelector((state) => state.logged);
+
   const [loaded, setLoaded] = useState(false);
-  const [logged, setLogged] = useState(false);
+  const [logged, setLogged] = useState(status);
+
+  useEffect(() => {
+    setLogged(status);
+  }, [status]);
 
   setTimeout(function () {
     setLoaded(true);
@@ -54,7 +74,6 @@ export default function App() {
       <Tab.Navigator
         initialRouteName="signin"
         screenOptions={{
-          headerShown: false,
           tabBarStyle: {
             backgroundColor: "rgba(117, 196, 76, 1)",
             paddingTop: 7,
@@ -66,6 +85,22 @@ export default function App() {
             overflow: "hidden",
           },
           tabBarShowLabel: false,
+          // headerTitleAlign: "center",
+          // headerTitleStyle: {
+          //   color: "rgba(117, 196, 76, 1)",
+          // },
+          // headerLeftContainerStyle: {
+          //   paddingHorizontal: 20,
+          //   marginTop: 3,
+          // },
+          // headerRightContainerStyle: {
+          //   paddingHorizontal: 20,
+          // },
+          // headerLeft: () => (
+          //   <TouchableOpacity>
+          //     <Entypo name="menu" size={29} color="rgba(117, 196, 76, 1)" />
+          //   </TouchableOpacity>
+          // ),
         }}
       >
         <Tab.Screen
@@ -73,6 +108,8 @@ export default function App() {
             tabBarIcon: () => (
               <FontAwesome name="home" size={24} color="white" />
             ),
+
+            header: () => <Header name={"Home"} />,
           }}
           name="Home"
           component={Home}
@@ -82,8 +119,9 @@ export default function App() {
             tabBarIcon: () => (
               <FontAwesome name="search" size={24} color="white" />
             ),
+            header: () => <Header name={"Search"} />,
           }}
-          name="Settings"
+          name="Search"
           component={Setting}
         />
         <Tab.Screen
@@ -117,3 +155,5 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+export default AppWrapper;

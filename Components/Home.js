@@ -1,12 +1,15 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { Parent } from "../Customs/Parent";
+import SearchBar from "../Snippets/SearchBar";
+import CarouselShow from "../Snippets/CarouselShow";
 
 const Home = () => {
   return (
     <Parent>
       <View>
-        <Text>Home</Text>
+        <SearchBar />
+        <CarouselShow />
       </View>
     </Parent>
   );

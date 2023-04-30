@@ -9,8 +9,12 @@ import {
 import React from "react";
 import { Parent } from "../Customs/Parent";
 import Logger from "../Snippets/Logger";
+import { useDispatch } from "react-redux";
+import { setStatus } from "../redux/userSlice";
 
 const Login = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   return (
     <View style={styles.container}>
       <Image source={require("../assets/login.png")} style={styles.logo} />
@@ -20,7 +24,7 @@ const Login = ({ navigation }) => {
         <TextInput placeholder="Password" style={styles.inputs} />
       </View>
       <TouchableOpacity
-        onPress={() => navigation.navigate("Signin")}
+        onPress={() => dispatch(setStatus(true))}
         style={styles.button}
       >
         <Text style={styles.button_text}>Login</Text>
