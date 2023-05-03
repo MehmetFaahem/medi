@@ -1,35 +1,21 @@
-import * as React from "react";
-import { Dimensions, Text, View } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
+import { StyleSheet, Text, View, Image } from "react-native";
+import React from "react";
 
 const CarouselShow = () => {
-  const width = Dimensions.get("window").width;
   return (
     <View>
-      <Carousel
-        loop
-        width={width}
-        height={width / 2}
-        autoPlay={true}
-        data={[...new Array(6).keys()]}
-        scrollAnimationDuration={1000}
-        onSnapToItem={(index) => console.log("current index:", index)}
-        renderItem={({ index }) => (
-          <View
-            style={{
-              flex: 1,
-              borderWidth: 1,
-              justifyContent: "center",
-            }}
-          >
-            <Text style={{ textAlign: "center", fontSize: 30 }}>{index}</Text>
-          </View>
-        )}
-      />
+      <Image source={require("../assets/banner.png")} style={styles.logo} />
     </View>
   );
 };
 
 export default CarouselShow;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  logo: {
+    width: "100%",
+    height: 128,
+    borderRadius: 12,
+    marginTop: 12,
+  },
+});

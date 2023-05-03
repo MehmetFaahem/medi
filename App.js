@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "./Components/Home";
-import Setting from "./Components/Setting";
+import Search from "./Components/Search";
 import { FontAwesome } from "@expo/vector-icons";
 import "react-native-gesture-handler";
 import * as NavigationBar from "expo-navigation-bar";
@@ -20,6 +20,9 @@ import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import Header from "./Customs/Header";
+import Details from "./Components/Details";
+import Loved from "./Components/Loved";
+import Cart from "./Components/Cart";
 
 NavigationBar.setBackgroundColorAsync("rgba(117, 196, 76, 1)");
 
@@ -117,39 +120,49 @@ export function App() {
         <Tab.Screen
           options={{
             tabBarIcon: () => (
-              <FontAwesome name="search" size={24} color="white" />
+              <FontAwesome name="search" size={22} color="white" />
             ),
             header: () => <Header name={"Search"} />,
           }}
           name="Search"
-          component={Setting}
+          component={Search}
         />
         <Tab.Screen
           options={{
             tabBarIcon: () => (
-              <FontAwesome name="heart" size={24} color="white" />
+              <FontAwesome name="heart" size={22} color="white" />
             ),
+            header: () => <Header name={"Favourites"} />,
           }}
-          name="Settings1"
-          component={Setting}
+          name="Loved"
+          component={Loved}
         />
         <Tab.Screen
           options={{
             tabBarIcon: () => (
-              <FontAwesome name="history" size={24} color="white" />
+              <FontAwesome name="history" size={22} color="white" />
             ),
           }}
           name="Settings2"
-          component={Setting}
+          component={Search}
         />
         <Tab.Screen
           options={{
             tabBarIcon: () => (
-              <FontAwesome name="shopping-cart" size={24} color="white" />
+              <FontAwesome name="shopping-cart" size={22} color="white" />
             ),
+            header: () => <Header name={"Cart"} />,
           }}
-          name="Settings3"
-          component={Setting}
+          name="Cart"
+          component={Cart}
+        />
+        <Tab.Screen
+          options={{
+            tabBarButton: () => null,
+            header: () => null,
+          }}
+          name="Details"
+          component={Details}
         />
       </Tab.Navigator>
     </NavigationContainer>

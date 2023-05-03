@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import React from "react";
 
 export const Parent = ({ children }) => {
   return (
-    <View style={styles.conatiner}>
+    <ScrollView style={styles.conatiner}>
       <View style={styles.childrens}>{children}</View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -15,8 +15,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   childrens: {
-    paddingVertical: 50,
+    paddingTop: 10,
     paddingHorizontal: 20,
     alignItems: "center",
+    flex: 1,
   },
 });
