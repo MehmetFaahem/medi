@@ -23,11 +23,92 @@ import Header from "./Customs/Header";
 import Details from "./Components/Details";
 import Loved from "./Components/Loved";
 import Cart from "./Components/Cart";
+import HeaderForHome from "./Customs/HeaderForHome";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
 NavigationBar.setBackgroundColorAsync("rgba(117, 196, 76, 1)");
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+const Bottomed = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="signin"
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: "rgba(117, 196, 76, 1)",
+          paddingTop: 7,
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          borderLeftWidth: 0.2,
+          borderRightWidth: 0.2,
+          position: "absolute",
+          overflow: "hidden",
+        },
+        tabBarShowLabel: false,
+      }}
+    >
+      <Tab.Screen
+        options={{
+          tabBarIcon: () => <FontAwesome name="home" size={24} color="white" />,
+
+          header: () => <HeaderForHome />,
+        }}
+        name="HomeScreen"
+        component={Home}
+      />
+      <Tab.Screen
+        options={{
+          tabBarIcon: () => (
+            <FontAwesome name="search" size={22} color="white" />
+          ),
+          header: () => <Header name={"Search"} />,
+        }}
+        name="Search"
+        component={Search}
+      />
+      <Tab.Screen
+        options={{
+          tabBarIcon: () => (
+            <FontAwesome name="heart" size={22} color="white" />
+          ),
+          header: () => <Header name={"Favourites"} />,
+        }}
+        name="Loved"
+        component={Loved}
+      />
+      <Tab.Screen
+        options={{
+          tabBarIcon: () => (
+            <FontAwesome name="history" size={22} color="white" />
+          ),
+        }}
+        name="Settings2"
+        component={Search}
+      />
+      <Tab.Screen
+        options={{
+          tabBarIcon: () => (
+            <FontAwesome name="shopping-cart" size={22} color="white" />
+          ),
+          header: () => <Header name={"Cart"} />,
+        }}
+        name="Cart"
+        component={Cart}
+      />
+      <Tab.Screen
+        options={{
+          tabBarButton: () => null,
+          header: () => null,
+        }}
+        name="Details"
+        component={Details}
+      />
+    </Tab.Navigator>
+  );
+};
 
 const AppWrapper = () => {
   return (
@@ -74,97 +155,14 @@ export function App() {
   return (
     <NavigationContainer>
       <StatusBar backgroundColor="rgba(117, 196, 76, 1)" />
-      <Tab.Navigator
-        initialRouteName="signin"
+      <Drawer.Navigator
+        initialRouteName="Bottomed"
         screenOptions={{
-          tabBarStyle: {
-            backgroundColor: "rgba(117, 196, 76, 1)",
-            paddingTop: 7,
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            borderLeftWidth: 0.2,
-            borderRightWidth: 0.2,
-            position: "absolute",
-            overflow: "hidden",
-          },
-          tabBarShowLabel: false,
-          // headerTitleAlign: "center",
-          // headerTitleStyle: {
-          //   color: "rgba(117, 196, 76, 1)",
-          // },
-          // headerLeftContainerStyle: {
-          //   paddingHorizontal: 20,
-          //   marginTop: 3,
-          // },
-          // headerRightContainerStyle: {
-          //   paddingHorizontal: 20,
-          // },
-          // headerLeft: () => (
-          //   <TouchableOpacity>
-          //     <Entypo name="menu" size={29} color="rgba(117, 196, 76, 1)" />
-          //   </TouchableOpacity>
-          // ),
+          header: () => null,
         }}
       >
-        <Tab.Screen
-          options={{
-            tabBarIcon: () => (
-              <FontAwesome name="home" size={24} color="white" />
-            ),
-
-            header: () => <Header name={"Home"} />,
-          }}
-          name="Home"
-          component={Home}
-        />
-        <Tab.Screen
-          options={{
-            tabBarIcon: () => (
-              <FontAwesome name="search" size={22} color="white" />
-            ),
-            header: () => <Header name={"Search"} />,
-          }}
-          name="Search"
-          component={Search}
-        />
-        <Tab.Screen
-          options={{
-            tabBarIcon: () => (
-              <FontAwesome name="heart" size={22} color="white" />
-            ),
-            header: () => <Header name={"Favourites"} />,
-          }}
-          name="Loved"
-          component={Loved}
-        />
-        <Tab.Screen
-          options={{
-            tabBarIcon: () => (
-              <FontAwesome name="history" size={22} color="white" />
-            ),
-          }}
-          name="Settings2"
-          component={Search}
-        />
-        <Tab.Screen
-          options={{
-            tabBarIcon: () => (
-              <FontAwesome name="shopping-cart" size={22} color="white" />
-            ),
-            header: () => <Header name={"Cart"} />,
-          }}
-          name="Cart"
-          component={Cart}
-        />
-        <Tab.Screen
-          options={{
-            tabBarButton: () => null,
-            header: () => null,
-          }}
-          name="Details"
-          component={Details}
-        />
-      </Tab.Navigator>
+        <Drawer.Screen name="Home" component={Bottomed} />
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }
