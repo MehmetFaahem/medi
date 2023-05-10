@@ -25,6 +25,8 @@ import Loved from "./Components/Loved";
 import Cart from "./Components/Cart";
 import HeaderForHome from "./Customs/HeaderForHome";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import CustomDrawerContent from "./Customs/CustomDrawerContent";
+import History from "./Components/History";
 
 NavigationBar.setBackgroundColorAsync("rgba(117, 196, 76, 1)");
 
@@ -84,9 +86,11 @@ const Bottomed = () => {
           tabBarIcon: () => (
             <FontAwesome name="history" size={22} color="white" />
           ),
+
+          header: () => <Header name={"History"} />,
         }}
-        name="Settings2"
-        component={Search}
+        name="History"
+        component={History}
       />
       <Tab.Screen
         options={{
@@ -119,6 +123,15 @@ const AppWrapper = () => {
 };
 
 export function App() {
+  // const [info, setInfo] = useState({});
+  // useEffect(() => {
+  //   const Catcher = async () => {
+  //     const catchfromstorage = await AsyncStorage.getItem("userInfo");
+  //     const parsed = await JSON.parse(catchfromstorage);
+  //     setInfo(parsed);
+  //   };
+  //   Catcher();
+  // }, []);
   const status = useSelector((state) => state.logged);
 
   const [loaded, setLoaded] = useState(false);
@@ -160,6 +173,7 @@ export function App() {
         screenOptions={{
           header: () => null,
         }}
+        drawerContent={(props) => <CustomDrawerContent {...props} />}
       >
         <Drawer.Screen name="Home" component={Bottomed} />
       </Drawer.Navigator>

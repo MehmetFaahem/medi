@@ -1,23 +1,16 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React, { useState, useEffect } from "react";
-import AnimatedLoader from "react-native-animated-loader";
+import Lottie from "lottie-react-native";
 
 const Initial = () => {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    setInterval(() => {
-      setVisible(!visible);
-    }, 2000);
-  }, []);
   return (
     <View style={styles.container}>
       <Image source={require("../assets/splash.png")} style={styles.logo} />
-      <AnimatedLoader
-        visible={visible}
-        overlayColor="rgba(255,255,255,0.0)"
-        animationStyle={styles.lottie}
-        speed={1}
+      <Lottie
         source={require("../assets/98993-three-dots-loading.json")}
+        autoPlay
+        loop
+        style={styles.lottie}
       />
     </View>
   );
@@ -38,6 +31,5 @@ const styles = StyleSheet.create({
   lottie: {
     width: 100,
     height: 100,
-    marginTop: 40,
   },
 });

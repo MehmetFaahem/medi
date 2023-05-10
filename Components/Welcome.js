@@ -4,6 +4,7 @@ import { useFonts } from "expo-font";
 import { useNavigation } from "@react-navigation/native";
 
 const Welcome = () => {
+  const navigation = useNavigation();
   const [loaded] = useFonts({
     Montserrat: require("../assets/Segoe-UI.ttf"),
   });
@@ -12,7 +13,6 @@ const Welcome = () => {
     return null;
   }
 
-  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Image source={require("../assets/welcome.png")} style={styles.logo} />

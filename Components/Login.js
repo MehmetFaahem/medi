@@ -6,28 +6,80 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Parent } from "../Customs/Parent";
 import Logger from "../Snippets/Logger";
-import { useDispatch } from "react-redux";
-import { setStatus } from "../redux/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers, setStatus } from "../redux/userSlice";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
+  const [details, setDetails] = useState({
+    name: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+  const [errored, setErrored] = useState(false);
+
+  const AllUsers = useSelector((state) => state.users);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
+
+  const LoginUser = async () => {
+    setLoading(true);
+    axios
+      .post(`https://medi-backend.vercel.app/api/users/login`, details)
+      .then(async (res) => {
+        if (res.status == 201) {
+          let userInfoData = res.data;
+          setUserInfo(userInfoData);
+
+          const finding = AllUsers.find(({ name }) => name == details.name);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(finding));
+          console.log(userInfoData);
+          dispatch(setStatus(true));
+          setLoading(false);
+        } else {
+          setErrored(true);
+        }
+      })
+      .catch((e) => {
+        console.log(`register error ${e}`);
+      });
+  };
 
   return (
     <View style={styles.container}>
       <Image source={require("../assets/login.png")} style={styles.logo} />
       <Text style={styles.text_two}>Login</Text>
       <View style={styles.inputs_container}>
-        <TextInput placeholder="User name" style={styles.inputs} />
-        <TextInput placeholder="Password" style={styles.inputs} />
+        <TextInput
+          onChangeText={(name) => setDetails({ ...details, name })}
+          placeholder="User name"
+          style={styles.inputs}
+        />
+        <TextInput
+          onChangeText={(password) => setDetails({ ...details, password })}
+          placeholder="Password"
+          style={styles.inputs}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          keyboardType="default"
+        />
       </View>
       <TouchableOpacity
-        onPress={() => dispatch(setStatus(true))}
+        disabled={loading}
+        onPress={() => LoginUser()}
         style={styles.button}
       >
-        <Text style={styles.button_text}>Login</Text>
+        <Text style={styles.button_text}>
+          {loading ? "Logging..." : "Log In"}
+        </Text>
       </TouchableOpacity>
       <Text
         onPress={() => navigation.navigate("Forgot")}
@@ -64,7 +116,7 @@ const styles = StyleSheet.create({
     width: 306,
     height: 43,
     borderWidth: 1,
-    borderColor: "rgba(112, 112, 112)",
+    borderColor: "rgb(112, 112, 112)",
     borderRadius: 10,
     paddingHorizontal: 10,
     marginTop: 12,

@@ -13,48 +13,90 @@ import { AntDesign } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 const Details = ({ route, navigation }) => {
   const [quantity, setQuantity] = useState(1);
   const { item } = route.params;
   const [lovedmed, setLovedmed] = useState([]);
+  const [info, setInfo] = useState({});
+  const [added, setAdded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getItems = async () => {
-      const Gotvalue = await AsyncStorage.getItem("Loved");
-      if (Gotvalue) {
-        const finalyGotten = await JSON.parse(Gotvalue);
-        setLovedmed(finalyGotten);
-      }
+      const userInfo = await AsyncStorage.getItem("userInfo");
+      const Parsed = await JSON.parse(userInfo);
+      setInfo(Parsed);
     };
     getItems();
-  }, [lovedmed]);
+  }, [item]);
 
   const MakeFavourite = async (value) => {
-    const Gotvalue = await AsyncStorage.getItem("Loved");
-    if (Gotvalue) {
-      var finalyGot = await JSON.parse(Gotvalue);
-    }
-    if (finalyGot) {
-      try {
-        await finalyGot.push(value);
-        const jsonValue = JSON.stringify(finalyGot);
-        await AsyncStorage.setItem("Loved", jsonValue);
-      } catch (e) {
-        console.log(e);
-      }
-    } else {
-      try {
-        let LovedData = [];
-        await LovedData.push(value);
-        const jsonValue = await JSON.stringify(LovedData);
-        await AsyncStorage.setItem("Loved", jsonValue);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    console.log(finalyGot);
+    axios
+      .post(`https://medi-backend.vercel.app/api/users/favour`, {
+        user_id: info._id,
+        ...item,
+      })
+      .then(async (res) => {
+        if (res.status == 201) {
+          Notifications.scheduleNotificationAsync({
+            content: {
+              title: item.name,
+              body: "Added to your Favourite ",
+            },
+            trigger: null,
+          });
+        } else {
+          setErrored(true);
+        }
+      })
+      .catch((e) => {
+        console.log(`register error ${e}`);
+      });
   };
+
+  const AddToCart = (items) => {
+    setLoading(true);
+    axios
+      .post(`https://medi-backend.vercel.app/api/users/carted`, {
+        user_id: info._id,
+        name: item.name,
+        company: item.company,
+        category: item.category,
+        price: item.price,
+        quantity: quantity,
+      })
+      .then(async (res) => {
+        if (res.status == 201) {
+          Notifications.scheduleNotificationAsync({
+            content: {
+              title: items.name,
+              body: "Added to your Medi cart",
+            },
+            trigger: null,
+          });
+          setAdded(true);
+          setLoading(false);
+          navigation.navigate("Cart");
+        } else {
+          setErrored(true);
+        }
+      })
+      .catch((e) => {
+        console.log(`register error ${e}`);
+      });
+  };
+
   return (
     <View
       style={{
@@ -130,16 +172,10 @@ const Details = ({ route, navigation }) => {
               <Text>by {item.company}</Text>
             </View>
             <TouchableOpacity
-              onPress={() => MakeFavourite(item.name)}
+              onPress={() => MakeFavourite(item)}
               style={{ marginTop: 3 }}
             >
-              <AntDesign
-                name={
-                  lovedmed.find((val) => val == item.name) ? "heart" : "hearto"
-                }
-                size={24}
-                color="rgb(240, 36, 107)"
-              />
+              <AntDesign name={"hearto"} size={24} color="rgb(240, 36, 107)" />
             </TouchableOpacity>
           </View>
           <View
@@ -247,6 +283,8 @@ const Details = ({ route, navigation }) => {
         </View>
         <View>
           <TouchableOpacity
+            disabled={loading}
+            onPress={() => AddToCart(item)}
             style={{
               width: 290,
               height: 43,
@@ -264,7 +302,7 @@ const Details = ({ route, navigation }) => {
                 fontWeight: 600,
               }}
             >
-              Add to cart
+              {loading ? "Adding..." : "Add to cart"}
             </Text>
           </TouchableOpacity>
         </View>

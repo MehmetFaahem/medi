@@ -6,34 +6,90 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Parent } from "../Customs/Parent";
 import Logger from "../Snippets/Logger";
 import { useDispatch, useSelector } from "react-redux";
-import { setStatus } from "../redux/userSlice";
+import { fetchUsers, setStatus } from "../redux/userSlice";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
   const status = useSelector((state) => state.logged);
+  const [loading, setLoading] = useState(false);
+  const [details, setDetails] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    password: "",
+  });
+  const [userInfo, setUserInfo] = useState({});
+  const [errored, setErrored] = useState(false);
+
+  // const AllUsers = useSelector((state) => state.users);
+
+  // useEffect(() => {
+  //   dispatch(fetchUsers());
+  // }, [AllUsers]);
+
+  const registerUser = () => {
+    setLoading(true);
+    axios
+      .post(`https://medi-backend.vercel.app/api/users`, details)
+      .then(async (res) => {
+        if (res.status == 201) {
+          let userInfoData = res.data;
+          setUserInfo(userInfoData);
+          await AsyncStorage.setItem("userInfo", JSON.stringify(userInfoData));
+          console.log(userInfoData);
+          dispatch(setStatus(true));
+          setLoading(false);
+        } else {
+          setErrored(true);
+        }
+      })
+      .catch((e) => {
+        console.log(`register error ${e}`);
+      });
+  };
 
   return (
     <View style={styles.container}>
       <Image source={require("../assets/signin.png")} style={styles.logo} />
       <Text style={styles.text_two}>Sign in</Text>
       <View style={styles.inputs_container}>
-        <TextInput placeholder="User name" style={styles.inputs} />
-        <TextInput placeholder="Phone Number" style={styles.inputs} />
-        <TextInput placeholder="Email" style={styles.inputs} />
-        <TextInput placeholder="Password" style={styles.inputs} />
+        <TextInput
+          onChangeText={(name) => setDetails({ ...details, name })}
+          placeholder="User name"
+          style={styles.inputs}
+        />
+        <TextInput
+          onChangeText={(phone) => setDetails({ ...details, phone })}
+          placeholder="Phone Number"
+          style={styles.inputs}
+        />
+        <TextInput
+          onChangeText={(email) => setDetails({ ...details, email })}
+          placeholder="Email"
+          style={styles.inputs}
+        />
+        <TextInput
+          onChangeText={(password) => setDetails({ ...details, password })}
+          placeholder="Password"
+          style={styles.inputs}
+        />
       </View>
       <TouchableOpacity
         onPress={() => {
-          dispatch(setStatus(true));
-          console.log(status);
+          registerUser();
         }}
+        disabled={loading}
         style={styles.button}
       >
-        <Text style={styles.button_text}>Sign In</Text>
+        <Text style={styles.button_text}>
+          {loading ? "Signing..." : "Sign In"}
+        </Text>
       </TouchableOpacity>
       <Text
         onPress={() => navigation.navigate("Login")}
@@ -70,7 +126,7 @@ const styles = StyleSheet.create({
     width: 306,
     height: 43,
     borderWidth: 1,
-    borderColor: "rgba(112, 112, 112)",
+    borderColor: "rgb(112, 112, 112)",
     borderRadius: 10,
     paddingHorizontal: 10,
     marginTop: 12,
